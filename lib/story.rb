@@ -8,6 +8,10 @@ class String
   def to_user
     { role: 'user', content: self }
   end
+
+  def proper
+    self.split(/\s+/).map(&:capitalize).join(' ')
+  end
 end
 
 # Story DSL
@@ -31,8 +35,8 @@ class Story
     @title = txt
   end
 
-  def character(tag, &blk)
-    @characters[tag] = Character.new(tag, &blk)
+  def character(tag, simple = nil, &blk)
+    @characters[tag] = Character.new(tag.to_s.proper, simple, &blk)
   end
 
   def scene(name, &blk)
@@ -44,7 +48,7 @@ class Story
   end
 
   def character_context(people)
-    characters_to_include = people.empty? ? @characters.keys : people.map { |name| characters[name] }
+    characters_to_include = people.empty? ? @characters.keys : people
     characters_to_include.map { |name| characters[name].context }
   end
 
@@ -79,10 +83,11 @@ end
 class Character
   attr_reader :traits
 
-  def initialize(name, &block)
+  def initialize(name, simple = nil, &block)
     @name = name.to_s
     @traits = []
-    instance_eval(&block)
+    @traits << simple if simple
+    instance_eval(&block) if block_given?
   end
 
   def name(txt)
