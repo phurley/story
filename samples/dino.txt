@@ -1,0 +1,20 @@
+title "Dino"
+
+background "A story about dinosaurs"
+
+character :rex do
+  trait "a large predator"
+end
+
+character :bronto do
+  trait "a large herbavore"
+end
+
+scene :egg do 
+  setting "a nest #{[1,2,3,4,5,6,7].sample}"
+  prompt "egg"
+  characters :rex
+  prompt "crack"
+end
+ 
+# foo

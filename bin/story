@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Add your gem's lib directory to the load path
+$LOAD_PATH.unshift(File.expand_path('../lib', __dir__))
+
+require 'story'
+
+ARGV.each do |fname|
+  body = File.read(fname)
+
+  if model?(body)
+    build_model(fname, body)
+  else
+    build_story(fname, body)
+  end
+end
