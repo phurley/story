@@ -89,16 +89,17 @@ class Model
     messages = add_system(messages)
 
     logger.debug "\n#{messages.inspect}\n\n"
-    result = @ai.chat(messages: messages, options: options) do |resp, raw|
+    result = @ai.chat(messages: messages, options: options) do |resp, _|
       resp = resp['choices'].first if resp['choices']
       logger.info(resp['message']['content'])
     end
     logger.info("\n\n")
 
-    result = result.first if result.is_a?(Array)
-    result = result['choices'].first if result['choices']
     pp result
-    result.map { |rec| rec['message']['content'] }.join
+    result.map do |rec|
+      rec = rec['choices'].first if rec['choices']
+      rec['message']['content']
+    end.join
   end
 
   class << self
