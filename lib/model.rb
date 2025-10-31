@@ -96,6 +96,7 @@ class Model
     end
     logger.info("\n\n")
 
+    result = result['choices'].first if result['choices']
     result.map { |rec| rec['message']['content'] }.join
   end
 
