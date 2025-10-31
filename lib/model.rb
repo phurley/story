@@ -92,6 +92,7 @@ class Model
     result = @ai.chat(messages: messages, options: options) do |resp, raw|
       puts resp.inspect
       puts raw.inspect
+      resp = resp['choices'].first if resp['choices']
       logger.info(resp['message']['content'])
     end
     logger.info("\n\n")
