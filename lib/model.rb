@@ -7,20 +7,34 @@ require_relative './ai'
 class Model
   attr_accessor :logger
 
-  def initialize(&block)
-    @system = "You are a story teller. \
+  DEFAULT_SYSTEM = "You are a story teller. \
       Carefully examine all of the information provided, it is your background information. \
       When finally provided a prompt, create a story incorporating the prompt and exploring it. \
       Stop and wait for additional prompts once fully explored."
 
+  def initialize(&block)
+    set_defaults
+    setup_logging
+
     instance_eval(&block)
 
-    @max_responses = 5
-    @logger = Logger.new('story.log')
-    @logger.level = Logger::INFO
-    @logger.formatter = proc { |_, _, _, msg| msg }
     @ai = AI.new(model: @name)
     Model.current_model = self
+  end
+
+  def set_defaults
+    @system = DEFAULT_SYSTEM
+    @max_responses = 5
+  end
+
+  def setup_logging
+    @logger = Logger.new('story.log')
+    begin
+      @logger.level = Logger.const_get(ENV['LOGLEVEL'])
+    rescue NameError
+      @logger.level = Logger::INFO
+    end
+    @logger.formatter = proc { |_, _, _, msg| msg }
   end
 
   def model(name)
