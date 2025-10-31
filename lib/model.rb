@@ -97,7 +97,7 @@ class Model
     end
     logger.info("\n\n")
 
-    puts result.inspect
+    result = result.first if result.is_a?(Array)
     result = result['choices'].first if result['choices']
     result.map { |rec| rec['message']['content'] }.join
   end
