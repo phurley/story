@@ -10,8 +10,8 @@ class AI
 
   def initialize(model: 'dolphin-mixtral:latest',
                  address: ENV['OLLAMA_HOST'] || 'http://localhost:11434',
-                 credentials: {},
-                 options: { server_sent_events: true }, timeout: 180)
+                 credentials: { bearer_token: ENV['OLLAMA_TOKEN'] },
+                 options: { server_sent_events: true }, timeout: 12000)
     @client = Ollama.new(
       credentials: { address: address }.merge(credentials),
       options: options
@@ -22,15 +22,11 @@ class AI
     @pid = nil
   end
 
-  def self.configure(model: 'dolphin-mixtral:latest', address: ENV['OLLAMA_HOST'] || 'http://localhost:11434', credentials: {}, options: { server_sent_events: true }, timeout: 12000)
-    @ai = AI.new(model: models, address: address, credentials: credentials, options: options, timeout: timeout)
-  end
-
-  def self.chat(messages: {}, options: {})
+  def self.chat(messages: {}, options: {}, &block)
     @ai = AI.new if @ai.nil?
     options[:server_sent_events] = true unless options.key?(:server_sent_events)
 
-    @ai.chat(messages: messages, options: options)
+    @ai.chat(messages: messages, options: options, &block)
   end
 
   def chat(messages: {}, options: {}, &blk)

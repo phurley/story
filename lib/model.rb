@@ -17,6 +17,7 @@ class Model
 
     @max_responses = 5
     @logger = Logger.new('story.log')
+    @logger.level = Logger::INFO
     @logger.formatter = proc { |_, _, _, msg| msg }
     @ai = AI.new(model: @name)
     Model.current_model = self
@@ -74,7 +75,9 @@ class Model
     messages = add_system(messages)
 
     logger.debug "\n#{messages.inspect}\n\n"
-    result = @ai.chat(messages: messages, options: options) do |resp, _|
+    result = @ai.chat(messages: messages, options: options) do |resp, raw|
+      puts resp.inspect
+      puts raw.inspect
       logger.info(resp['message']['content'])
     end
     logger.info("\n\n")

@@ -35,8 +35,9 @@ class Story
     @title = txt
   end
 
-  def character(tag, simple = nil, &blk)
-    @characters[tag] = Character.new(tag.to_s.proper, simple, &blk)
+  def character(tag, simple = nil, traits: [], name: tag.to_s.proper, &blk)
+    traits << simple if simple
+    @characters[tag] = Character.new(name: name, traits: traits, &blk)
   end
 
   def scene(name, &blk)
@@ -50,6 +51,9 @@ class Story
   def character_context(people)
     characters_to_include = people.empty? ? @characters.keys : people
     characters_to_include.map { |name| characters[name].context }
+  rescue NoMethodError
+    puts "Unable to find someone #{people.inspect}"
+    exit 1
   end
 
   def build_prompt(context, responses, prompt)
@@ -83,10 +87,9 @@ end
 class Character
   attr_reader :traits
 
-  def initialize(name, simple = nil, &block)
-    @name = name.to_s
-    @traits = []
-    @traits << simple if simple
+  def initialize(traits: [], name: Faker::Name.unique.first_name, &block)
+    @name = name
+    @traits = traits
     instance_eval(&block) if block_given?
   end
 
