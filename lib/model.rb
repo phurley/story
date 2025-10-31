@@ -90,8 +90,6 @@ class Model
 
     logger.debug "\n#{messages.inspect}\n\n"
     result = @ai.chat(messages: messages, options: options) do |resp, raw|
-      puts resp.inspect
-      puts raw.inspect
       resp = resp['choices'].first if resp['choices']
       logger.info(resp['message']['content'])
     end
@@ -99,6 +97,7 @@ class Model
 
     result = result.first if result.is_a?(Array)
     result = result['choices'].first if result['choices']
+    pp result
     result.map { |rec| rec['message']['content'] }.join
   end
 
