@@ -21,7 +21,7 @@ module OpenAPI
         **options
       )
 
-      resp.choices.first.deep_to_h
+      resp.deep_to_h
     end
   end
 end
