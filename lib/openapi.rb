@@ -16,11 +16,12 @@ module OpenAPI
     end
 
     def chat(messages: [], options: {})
-      @client.chat.completions.create(
-        model: @model,
+      resp = @client.chat.completions.create(
         messages: messages,
         **options
       )
+
+      resp.choices.first
     end
   end
 end
