@@ -2,6 +2,7 @@
 
 require 'logger'
 require_relative './ai'
+require_relative './openai'
 
 # Model DSL
 class Model
@@ -18,7 +19,7 @@ class Model
 
     instance_eval(&block)
 
-    @ai = AI.new(model: @name)
+    @ai ||= AI.new(model: @name)
     Model.current_model = self
   end
 
@@ -35,6 +36,10 @@ class Model
       @logger.level = Logger::INFO
     end
     @logger.formatter = proc { |_, _, _, msg| msg }
+  end
+
+  def runpod(name: 'qwen3-32b-awq')
+    @ai = OpenAI::Client.new(model: name)
   end
 
   def model(name)

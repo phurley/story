@@ -9,7 +9,7 @@ class AI
   attr_accessor :timeout, :num_ctx, :top_p, :top_k, :repeat_penalty, :temperature
 
   def initialize(model: 'hf.co/DavidAU/Llama-3.2-8X3B-MOE-Dark-Champion-Instruct-uncensored-abliterated-18.4B-GGUF:Q6_K',
-                 address: ENV['OLLAMA_HOST'] || 'http://localhost:11434',
+                 address: ENV['OLLAMA_HOST'] || ENV['STORY_HOST'] || 'http://localhost:11434',
                  credentials: { bearer_token: ENV['OPEN_BUTTON_TOKEN'] },
                  options: { server_sent_events: true }, timeout: 18000)
     @client = Ollama.new(
