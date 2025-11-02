@@ -38,7 +38,7 @@ class Model
     @logger.formatter = proc { |_, _, _, msg| msg }
   end
 
-  def runpod(name: 'qwen3-32b-awq')
+  def runpod(name = 'qwen3-32b-awq')
     @ai = OpenAI::Client.new(model: name)
   end
 
