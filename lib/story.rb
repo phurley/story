@@ -139,7 +139,7 @@ def model?(body)
 end
 
 def runpod?(body)
-  body.match(/^\s*model\s+\S+/) &&
+  body.match(/^\s*runpod\s+\S+/) &&
     !body.match(/^\s*title/) &&
     !body.match(/^\s*scene/)
 end
