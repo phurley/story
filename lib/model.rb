@@ -98,6 +98,7 @@ class Model
       resp = resp['choices'].first if resp['choices']
       logger.info(resp['message']['content'])
     end
+
     logger.info("#{result}\n\n")
     result
   end

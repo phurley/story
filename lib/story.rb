@@ -5,6 +5,10 @@ require_relative './model'
 
 # Monkey patch string for fun and profit
 class String
+  def to_assistant
+    { role: 'assistant', content: self }
+  end
+
   def to_user
     { role: 'user', content: self }
   end
@@ -61,7 +65,7 @@ class Story
 
     messages = context + character_context(people)
     messages << setting.to_user unless setting.empty?
-    messages + responses.last(Model.max_responses).map(&:to_user) + ["PROMPT: #{prompt}".to_user]
+    messages + responses.last(Model.max_responses).map(&:to_assistant) + ["PROMPT: #{prompt}".to_user]
   end
 
   def build
