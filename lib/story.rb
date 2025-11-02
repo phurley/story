@@ -138,6 +138,12 @@ def model?(body)
     !body.match(/^\s*scene/)
 end
 
+def runpod?(body)
+  body.match(/^\s*model\s+\S+/) &&
+    !body.match(/^\s*title/) &&
+    !body.match(/^\s*scene/)
+end
+
 def build_story(fname, body)
   body = "Story.new do\n#{body}\nend"
 
@@ -159,7 +165,7 @@ if __FILE__ == $PROGRAM_NAME
   ARGV.each do |fname|
     body = File.read(fname)
 
-    if model?(body)
+    if model?(body) || runpod?(body)
       build_model(fname, body)
     else
       build_story(fname, body)
