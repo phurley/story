@@ -98,15 +98,8 @@ class Model
       resp = resp['choices'].first if resp['choices']
       logger.info(resp['message']['content'])
     end
-    logger.info("\n\n")
-
-    pp result
-    pp result.public_methods - Object.new.public_methods
-    puts "Boom"
-    result.map do |rec|
-      rec = rec['choices'].first if rec['choices']
-      rec['message']['content']
-    end.join
+    logger.info("#{result}\n\n")
+    result
   end
 
   class << self

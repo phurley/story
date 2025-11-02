@@ -21,7 +21,7 @@ module OpenAPI
         **options
       )
 
-      resp.deep_to_h
+      resp.choices.first.message.content
     end
   end
 end
