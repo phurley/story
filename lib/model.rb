@@ -101,6 +101,8 @@ class Model
     logger.info("\n\n")
 
     pp result
+    pp result.public_methods - Object.new.public_methods
+    puts "Boom"
     result.map do |rec|
       rec = rec['choices'].first if rec['choices']
       rec['message']['content']
