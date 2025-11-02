@@ -2,7 +2,7 @@
 
 require 'logger'
 require_relative './ai'
-require_relative './openai'
+require_relative './openapi'
 
 # Model DSL
 class Model
@@ -39,7 +39,7 @@ class Model
   end
 
   def runpod(name = 'qwen3-32b-awq')
-    @ai = OpenAI::Client.new(model: name)
+    @ai = OpenAPI::Client.new(model: name)
   end
 
   def model(name)

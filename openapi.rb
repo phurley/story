@@ -2,7 +2,7 @@
 
 require 'openai'
 
-module OpenAI
+module OpenAPI
   # client stuff
   class Client
     def initialize(model: 'qwen3-32b-awq', access_token: ENV['API_KEY'], uri_base: ENV['API_URL'])
