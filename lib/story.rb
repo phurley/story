@@ -160,8 +160,7 @@ def build_model(fname, body)
   # rubocop:enable Security/Eval
 end
 
-if __FILE__ == $PROGRAM_NAME
-
+def build
   ARGV.each do |fname|
     body = File.read(fname)
 
@@ -171,5 +170,10 @@ if __FILE__ == $PROGRAM_NAME
       build_story(fname, body)
     end
   end
+end
+
+if __FILE__ == $PROGRAM_NAME
+
+  build
 
 end

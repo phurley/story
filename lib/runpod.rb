@@ -25,6 +25,7 @@ module Runpod
 
     # --- Public API ---------------------------------------------------------
     def chat(messages: {}, options: {})
+      run_sync(input: )
     end
 
     def stream(job_id:, interval: 1.0, timeout: 120)
