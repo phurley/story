@@ -23,11 +23,12 @@ class Story
   VERSION = '1.0.0'
   attr_accessor :characters, :scenes
 
-  def initialize(&block)
+  def initialize(fname: 'story', &block)
     @characters = {}
     @scenes = []
     @messages = []
     @title = 'Untitled'
+    @fname = fname
     instance_eval(&block)
   end
 
@@ -64,7 +65,9 @@ class Story
     prompt, setting, people = *prompt
 
     messages = context + character_context(people)
-    messages << setting.to_user unless setting.empty?
+    if setting && !setting.empty?
+      messages << setting.to_user
+    end
     messages + responses.last(Model.max_responses).map(&:to_assistant) + ["PROMPT: #{prompt}".to_user]
   end
 
@@ -78,6 +81,7 @@ class Story
       scene.prompts.each do |prompt|
         Model.logger.info "\n\n> #{prompt}\n\n"
         responses << Model.chat(build_prompt(context, responses, prompt))
+        File.write(@fname, responses.last + "\n", mode: "a")
       end
     end
   end
@@ -149,7 +153,9 @@ def runpod?(body)
 end
 
 def build_story(fname, body)
-  body = "Story.new do\n#{body}\nend"
+  log_name = File.join(File.dirname(fname), File.basename(fname, File.extname(fname)) + '.log')
+  puts "Log to #{log_name}"
+  body = "Story.new(fname: #{log_name.inspect}) do\n#{body}\nend"
 
   # rubocop:disable Security/Eval
   eval(body, nil, fname, 0).build
