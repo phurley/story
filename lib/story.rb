@@ -153,8 +153,20 @@ def runpod?(body)
 end
 
 def build_story(fname, body)
-  log_name = File.join(File.dirname(fname), File.basename(fname, File.extname(fname)) + '.log')
+  base_dir  = File.dirname(fname)
+  base_name = File.basename(fname, File.extname(fname))
+  ext       = '.log'
+
+  counter = 1
+  log_name = File.join(base_dir, format("%s-%03d%s", base_name, counter, ext))
+
+  # Ensure unique filename by appending -001, -002, etc.
+  while File.exist?(log_name)
+    log_name = File.join(base_dir, format("%s-%03d%s", base_name, counter, ext))
+    counter += 1
+  end
   puts "Log to #{log_name}"
+
   body = "Story.new(fname: #{log_name.inspect}) do\n#{body}\nend"
 
   # rubocop:disable Security/Eval
