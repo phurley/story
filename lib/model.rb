@@ -25,6 +25,8 @@ class Model
 
   def set_defaults
     @system = DEFAULT_SYSTEM
+    @max_output_tokens = 10000
+    @max_tokens = 10000
     @max_responses = 5
   end
 
@@ -71,6 +73,14 @@ class Model
     @max_responses
   end
 
+  def max_output_tokens(value)
+    @max_output_tokens = value
+  end
+
+  def max_tokens(value)
+    @max_tokens = value
+  end
+
   def options
     {
       temperature: @temperature, top_p: @top_p, top_k: @top_k,
@@ -80,7 +90,9 @@ class Model
       typical_p: @typical_p, presence_penalty: @presence_penalty,
       frequency_penalty: @frequency_penalty, mirostat: @mirostat,
       mirostat_tau: @mirostat_tau,
-      mirostat_eta: @mirostat_eta
+      mirostat_eta: @mirostat_eta,
+      max_output_tokens: @max_output_tokens,
+      max_tokens: @max_tokens
     }.reject { |_, v| v.nil? }
   end
 
@@ -104,6 +116,10 @@ class Model
   end
 
   class << self
+    def logger
+      @model.logger
+    end
+
     def current_model=(model)
       @model = model
     end

@@ -76,7 +76,7 @@ class Story
       puts "  #{scene.title}"
       context = context_messages
       scene.prompts.each do |prompt|
-        puts "  #{prompt.inspect}"
+        Model.logger.info "\n\n> #{prompt}\n\n"
         responses << Model.chat(build_prompt(context, responses, prompt))
       end
     end

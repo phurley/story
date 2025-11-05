@@ -15,13 +15,21 @@ module OpenAPI
       end
     end
 
-    def chat(messages: [], options: {})
+    def chat(messages: [], options: {}, count: 0)
       resp = @client.chat.completions.create(
         messages: messages,
         **options
       )
 
-      resp.choices.first.message.content
+      choice = resp.choices.first
+      content = choice.message.content
+
+      if choice.finish_reason == :length && count < 2
+        continue_message = messages + [content.to_assistant, "Continue".to_user]
+        content + chat(messages: continue_message, count: count + 1)
+      else
+        content
+      end
     end
   end
 end
