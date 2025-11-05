@@ -102,7 +102,7 @@ class Model
     [{ role: 'system', content: @system }] + messages
   end
 
-  def chat(messages)
+  def old_chat(messages)
     messages = add_system(messages)
 
     logger.debug "\n#{messages.inspect}\n\n"
@@ -113,6 +113,47 @@ class Model
 
     logger.info("#{result}\n\n")
     result
+  end
+
+  def chat(messages)
+    messages = add_system(messages)
+    logger.debug "\n#{messages.inspect}\n\n"
+
+    attempts = 0
+    max_attempts = 3
+
+    begin
+      attempts += 1
+
+      result = @ai.chat(messages: messages, options: options) do |resp, _|
+        resp = resp['choices'].first if resp['choices']
+        logger.info(resp['message']['content'])
+      end
+
+      logger.info("#{result}\n\n")
+      result
+
+    rescue OpenAI::Errors::NotFoundError => e
+      logger.warn("OpenAI NotFoundError: #{e.message} (attempt #{attempts}/#{max_attempts})")
+      retry if attempts < max_attempts
+      raise
+
+    rescue OpenAI::Errors::RateLimitError,
+      OpenAI::Errors::ServiceUnavailableError,
+      OpenAI::Errors::TimeoutError,
+      OpenAI::Errors::APIConnectionError,
+      OpenAI::Errors::APIError => e
+      logger.warn("OpenAI transient error: #{e.class} - #{e.message} (attempt #{attempts}/#{max_attempts})")
+      sleep(2**attempts) # exponential backoff
+      retry if attempts < max_attempts
+      raise
+
+    rescue OpenAI::Errors::AuthenticationError,
+      OpenAI::Errors::InvalidRequestError => e
+      # These are not transient — don’t retry
+      logger.error("OpenAI unrecoverable error: #{e.class} - #{e.message}")
+      raise
+    end
   end
 
   class << self
