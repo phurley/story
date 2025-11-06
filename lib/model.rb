@@ -3,6 +3,7 @@
 require 'logger'
 require_relative './ai'
 require_relative './openapi'
+require_relative './ollama'
 
 # Model DSL
 class Model
