@@ -45,13 +45,19 @@ module OpenAPI
 
     private
 
+    def full_chat(messages:, options:, count:)
+      resp = @client.chat.completions.create(messages: messages, **options)
+      handle_response(resp, messages, options, count)
+    end
+
     def stream_chat(messages:, options:, count:, &block)
       response_buffer = +''
 
-      response = @client.chat.completions.stream_raw(
-        parameters: { messages: messages, **options }
-      ) do |event, _chunk, _bytes|
-        case event
+      response = @client.chat.completions.stream(messages: messages, **options) do |event, _chunk, _bytes|
+        pp event
+        pp _chunk
+
+        case even}t
         when /^data: (.*)$/
           json = Regexp.last_match(1)
           next if json.strip == '[DONE]'
