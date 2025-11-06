@@ -95,7 +95,7 @@ module OpenAPI
         # These are not transient — don’t retry
         logger.error("OpenAI unrecoverable error: #{e.class} - #{e.message}")
         raise
-      rescue OpenAI::Error::Errors, Faraday::Error, Timeout::Error, SocketError => e
+      rescue OpenAI::Errors::Error, Faraday::Error, Timeout::Error, SocketError => e
         attempts += 1
         if attempts <= max_retries
           warn "Retry #{attempts}/#{max_retries} after error: #{e.class} - #{e.message}"
