@@ -198,7 +198,7 @@ def build
   ARGV.each do |fname|
     body = File.read(fname)
 
-    if story?
+    if story?(body)
       build_story(fname, body)
     else
       build_model(fname, body)
