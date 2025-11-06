@@ -40,6 +40,10 @@ class Story
     @title = txt
   end
 
+  def plot(txt)
+    @plot = txt
+  end
+
   def character(tag, simple = nil, traits: [], name: tag.to_s.proper, &blk)
     traits << simple if simple
     @characters[tag] = Character.new(name: name, traits: traits, &blk)
@@ -125,6 +129,10 @@ class Scene
     @names = []
     @prompts = []
     instance_eval(&blk)
+  end
+
+  def duration(text)
+    @duration = text
   end
 
   def characters(*names)
