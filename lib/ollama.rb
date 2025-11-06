@@ -32,11 +32,13 @@ module Ollama
     end
 
     def chat(messages: {}, options: {}, &blk)
-      @client.chat({
+      response = @client.chat({
         model: @model,
         messages: messages,
         options: options
       }, &blk)
+
+      response.map { _1["content"] }.join
     end
   end
 end
