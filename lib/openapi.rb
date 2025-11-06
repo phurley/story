@@ -57,7 +57,7 @@ module OpenAPI
         pp event
         pp _chunk
 
-        case even}t
+        case event
         when /^data: (.*)$/
           json = Regexp.last_match(1)
           next if json.strip == '[DONE]'
