@@ -160,6 +160,10 @@ def runpod?(body)
     !body.match(/^\s*scene/)
 end
 
+def story?(body)
+  body.match(/^\s*title/) && body.match(/^\s*scene/)
+end
+
 def build_story(fname, body)
   base_dir  = File.dirname(fname)
   base_name = File.basename(fname, File.extname(fname))
@@ -194,10 +198,10 @@ def build
   ARGV.each do |fname|
     body = File.read(fname)
 
-    if model?(body) || runpod?(body)
-      build_model(fname, body)
-    else
+    if story?
       build_story(fname, body)
+    else
+      build_model(fname, body)
     end
   end
 end

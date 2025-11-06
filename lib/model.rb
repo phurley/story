@@ -19,7 +19,7 @@ class Model
 
     instance_eval(&block)
 
-    @ai ||= AI.new(model: @name)
+    @ai ||= Ollama::Client.new(model: @name)
     Model.current_model = self
   end
 
@@ -38,6 +38,10 @@ class Model
       @logger.level = Logger::INFO
     end
     @logger.formatter = proc { |_, _, _, msg| msg }
+  end
+
+  def ollama(name = 'qwen3-32b-awq')
+    @ai = Ollama::Client.new(model: name)
   end
 
   def runpod(name = 'qwen3-32b-awq')

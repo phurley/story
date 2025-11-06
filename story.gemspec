@@ -22,7 +22,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'faker', '~> 3.0'
   spec.add_dependency 'mime-types', '~> 3.7'
   spec.add_dependency 'ollama-ai', '~> 1.3'
-  spec.add_dependency 'openai'
+  spec.add_dependency 'openai', '~> 6.0'
 
   spec.metadata['source_code_uri'] = spec.homepage
   spec.required_ruby_version = '>= 2.7'
