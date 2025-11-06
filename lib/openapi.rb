@@ -91,7 +91,7 @@ module OpenAPI
       attempts = 0
       begin
         yield
-      rescue OpenAI::Errors::AuthenticationError, OpenAI::Errors::InvalidRequestError => e
+      rescue OpenAI::Errors::AuthenticationError, OpenAI::Errors::BadRequestError => e
         # These are not transient — don’t retry
         logger.error("OpenAI unrecoverable error: #{e.class} - #{e.message}")
         raise
