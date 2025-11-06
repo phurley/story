@@ -9,7 +9,7 @@ module OpenAPI
       @model = model
       @client = OpenAI::Client.new(api_key: access_token, base_url: uri_base) do |f|
         f.request = :json
-        f.response :logger, Logger.new($stdout), bodies: true
+        f.response :logger, Model.logger, bodies: true
         f.response :raise_error
         f.adapter Faraday.default_adapter
       end
@@ -93,16 +93,16 @@ module OpenAPI
         yield
       rescue OpenAI::Errors::AuthenticationError, OpenAI::Errors::BadRequestError => e
         # These are not transient — don’t retry
-        logger.error("OpenAI unrecoverable error: #{e.class} - #{e.message}")
+        Model.logger.error("OpenAI unrecoverable error: #{e.class} - #{e.message}")
         raise
       rescue OpenAI::Errors::Error, Faraday::Error, Timeout::Error, SocketError => e
         attempts += 1
         if attempts <= max_retries
-          warn "Retry #{attempts}/#{max_retries} after error: #{e.class} - #{e.message}"
+          Model.logger.warn "Retry #{attempts}/#{max_retries} after error: #{e.class} - #{e.message}"
           sleep(1.5 * attempts)
           retry
         else
-          warn "Failed on #{attempts} attempts after error: #{e.class} - #{e.message}"
+          Model.logger.warn "Failed on #{attempts} attempts after error: #{e.class} - #{e.message}"
           raise
         end
       end
