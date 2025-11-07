@@ -4,6 +4,7 @@ require 'logger'
 require_relative './ai'
 require_relative './openapi'
 require_relative './ollama'
+require_relative './kobold'
 
 # Model DSL
 class Model
@@ -47,6 +48,10 @@ class Model
 
   def runpod(name = 'qwen3-32b-awq')
     @ai = OpenAPI::Client.new(model: name)
+  end
+
+  def koboldcpp(name = 'qwen3-32b-awq')
+    @ai = KoboldCPP::Client.new(model: name)
   end
 
   def model(name)
