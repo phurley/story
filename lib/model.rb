@@ -129,9 +129,9 @@ class Model
     messages = add_system(messages)
     logger.debug "\n#{messages.inspect}\n\n"
 
-    result = @ai.chat(messages: messages, options: options) do |resp, _|
+    result = @ai.chat(messages: messages, options: options) do |resp|
       resp = resp['choices'].first if resp['choices']
-      logger.info(resp['message']['content'])
+      logger.instance_variable_get(:@logdev).dev.write(resp)
     end
 
     logger.info("#{result}\n\n")
