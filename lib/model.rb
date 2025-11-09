@@ -5,6 +5,7 @@ require_relative './ai'
 require_relative './openapi'
 require_relative './ollama'
 require_relative './kobold'
+require_relative './nullai'
 
 # Model DSL
 class Model
