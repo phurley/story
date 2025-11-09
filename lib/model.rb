@@ -54,6 +54,10 @@ class Model
     @ai = KoboldCPP::Client.new(model: name)
   end
 
+  def nullai
+    @ai = NullAI::Client.new
+  end
+
   def model(name)
     @name = name
   end

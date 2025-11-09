@@ -10,13 +10,24 @@ class String
   end
 
   def to_user
-    { role: 'user', content: self }
-  end
+    content = gsub(/:[a-z]+/) do |tag| 
+      tag = tag.delete_prefix(':').to_sym 
+      if Story.characters.key?(tag) 
+        Story.characters[tag].name
+      else
+        tag
+      end
 
-  def proper
-    self.split(/\s+/).map(&:capitalize).join(' ')
+      {
+        role: 'user',
+        content: content
+      }
+    end
+
+    def proper
+      split(/\s+/).map(&:capitalize).join(' ')
+    end
   end
-end
 
 # Story DSL
 class Story
@@ -25,6 +36,7 @@ class Story
 
   def initialize(fname: 'story', &block)
     @characters = {}
+    Story.characters = @characters
     @scenes = []
     @messages = []
     @title = 'Untitled'
@@ -54,7 +66,7 @@ class Story
   end
 
   def context_messages
-    ["Title #{@title}\n#{@background}".strip.to_user]
+    ["Title #{@title}\n#{@background}".strip.to_user] + @plot.to_s.empty? ? [] : [@plot.to_s.to_user]
   end
 
   def character_context(people)
@@ -89,6 +101,16 @@ class Story
       end
     end
   end
+
+  class << self
+    def characters
+      @characters || {}
+    end
+
+    def characters=(chars)
+      @characters = chars
+    end
+  end
 end
 
 def story(&block)
@@ -105,8 +127,12 @@ class Character
     instance_eval(&block) if block_given?
   end
 
-  def name(txt)
-    @name = txt
+  def name(txt = nil)
+    if txt
+      @name = txt
+    else
+      @name
+    end
   end
 
   def trait(msg)
