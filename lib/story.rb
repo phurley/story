@@ -17,12 +17,12 @@ class String
       else
         tag
       end
-
-      {
-        role: 'user',
-        content: content
-      }
     end
+
+    {
+      role: 'user',
+      content: content
+    }
   end
 
     def proper
@@ -67,7 +67,7 @@ class Story
   end
 
   def context_messages
-    ["Title #{@title}\n#{@background}".strip.to_user] + @plot.to_s.empty? ? [] : [@plot.to_s.to_user]
+    ["Title #{@title}\n#{@background}".strip.to_user] + (@plot.to_s.empty? ? [] : [@plot.to_s.to_user])
   end
 
   def character_context(people)
