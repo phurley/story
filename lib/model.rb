@@ -46,8 +46,8 @@ class Model
     @ai = Ollama::Client.new(model: name)
   end
 
-  def runpod(name = 'qwen3-32b-awq')
-    @ai = OpenAPI::Client.new(model: name)
+  def runpod(name = 'qwen3-32b-awq', streaming: false)
+    @ai = OpenAPI::Client.new(model: name, streaming: streaming)
   end
 
   def koboldcpp(name = 'qwen3-32b-awq')

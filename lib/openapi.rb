@@ -5,8 +5,9 @@ require 'openai'
 module OpenAPI
   # client stuff
   class Client
-    def initialize(model: 'qwen3-32b-awq', access_token: ENV['API_KEY'], uri_base: ENV['API_URL'])
+    def initialize(model: 'qwen3-32b-awq', access_token: ENV['API_KEY'], uri_base: ENV['API_URL'], streaming: false)
       @model = model
+      @streaming = streaming
       @client = OpenAI::Client.new(api_key: access_token, base_url: uri_base) do |f|
         f.request = :json
         f.response :logger, Model.logger, bodies: true
@@ -35,7 +36,7 @@ module OpenAPI
     def chat(messages: [], options: {}, count: 0, &block)
       options_with_model = options.merge(model: @model) if @model && !options.key?(:model)
       with_retries do
-        if block_given?
+        if block_given? && @streaming
           stream_chat(messages: messages, options: options_with_model, count: count, &block)
         else
           full_chat(messages: messages, options: options_with_model, count: count)
