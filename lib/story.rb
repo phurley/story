@@ -23,6 +23,7 @@ class String
         content: content
       }
     end
+  end
 
     def proper
       split(/\s+/).map(&:capitalize).join(' ')
