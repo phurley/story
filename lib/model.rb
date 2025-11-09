@@ -36,7 +36,9 @@ class Model
   def setup_logging
     @logger = Logger.new('story.log')
     begin
-      @logger.level = Logger.const_get(ENV['LOGLEVEL'])
+      if ENV['LOGLEVEL']
+        @logger.level = Logger.const_get(ENV['LOGLEVEL'])
+      end
     rescue NameError
       @logger.level = Logger::INFO
     end
