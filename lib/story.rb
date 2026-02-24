@@ -81,11 +81,11 @@ class Story
   def build_prompt(context, responses, prompt)
     prompt, setting, people = *prompt
 
-    messages = context + character_context(people)
-    if setting && !setting.empty?
-      messages << setting.to_user
-    end
-    messages + responses.last(Model.max_responses).map(&:to_assistant) + ["PROMPT: #{prompt}".to_user]
+    context +
+      responses.last(Model.max_responses).map(&:to_assistant) +
+      ((setting && !setting.empty?) ? [setting.to_user] : []) +
+      character_context(people) +  
+      ["PROMPT: #{prompt}".to_user]
   end
 
   def build
@@ -96,6 +96,7 @@ class Story
       puts "  #{scene.title}"
       context = context_messages
       scene.prompts.each do |prompt|
+        File.write(@fname, "\n\n> #{prompt}\n\n", mode: "a")
         Model.logger.info "\n\n> #{prompt}\n\n"
         responses << Model.chat(build_prompt(context, responses, prompt))
         File.write(@fname, responses.last + "\n", mode: "a")
@@ -197,7 +198,7 @@ def build_story(fname, body)
   ext       = '.log'
 
   counter = 1
-  log_name = File.join(base_dir, format("%s-%03d%s", base_name, counter, ext))
+  log_name = File.join(base_dir, "stories", format("%s-%03d%s", base_name, counter, ext))
 
   # Ensure unique filename by appending -001, -002, etc.
   while File.exist?(log_name)

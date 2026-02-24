@@ -34,6 +34,7 @@ module OpenAPI
     end
 
     def chat(messages: [], options: {}, count: 0, &block)
+      options = {} if options.nil?
       options_with_model = options.merge(model: @model) if @model && !options.key?(:model)
       with_retries do
         if block_given? && @streaming
@@ -47,13 +48,16 @@ module OpenAPI
     private
 
     def full_chat(messages:, options:, count:)
+      puts "Full chat"
       resp = @client.chat.completions.create(messages: messages, **options)
+      pp resp
       handle_response(resp, messages, options, count)
     end
 
     def stream_chat(messages:, options:, count:, &block)
       response_buffer = +''
 
+      puts "streaming"
       response = @client.chat.completions.stream(messages: messages, **options) do |event, _chunk, _bytes|
         pp event
         pp _chunk

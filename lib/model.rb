@@ -69,6 +69,12 @@ class Model
     @system = prompt
   end
 
+  def stop(stop_tokens)
+    if @ai && @ai.respond_to?(:stop=)
+      @ai.stop = stop_tokens
+    end 
+  end
+
   def temperature(temp)
     @temperature = temp
   end
@@ -96,6 +102,10 @@ class Model
 
   def max_tokens(value)
     @max_tokens = value
+  end
+
+  def min_p(value)
+    @min_p = value
   end
 
   def options
@@ -136,12 +146,14 @@ class Model
     messages = add_system(messages)
     logger.debug "\n#{messages.inspect}\n\n"
 
+    tracing = false
     result = @ai.chat(messages: messages, options: options) do |resp|
-      resp = resp['choices'].first if resp['choices']
+      tracing = true if resp
+      logger.instance_variable_get(:@logdev).dev.flush
       logger.instance_variable_get(:@logdev).dev.write(resp)
     end
 
-    logger.info("#{result}\n\n")
+    logger.info("#{result}\n\n") unless tracing
     result
   end
 
